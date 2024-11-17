@@ -40,9 +40,8 @@ class ModelWrapper:
         
         kf = KFold(n_splits=n_splits, shuffle=True, random_state=random_state)
         scores = cross_val_score(self.__algorithm, self.__features, self.__classes, cv=kf)
-        y_pred = cross_val_predict(self.__algorithm, self.__features, self.__classes, cv=kf)
-        print("K-Fold Cross-Validation Accuracy: %.3f (%.3f)" % (scores.mean(), scores.std()))
-        self.metrics = scores.mean(), scores.std()
+        print("K-Fold Cross-Validation Accuracy:", scores.mean())
+        self.metrics = scores.mean()
 
     def model_train(self, method, **kwargs):
         """
