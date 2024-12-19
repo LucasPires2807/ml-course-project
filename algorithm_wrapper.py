@@ -13,7 +13,8 @@ class ModelWrapper:
         - classes: array-like, target dataset
         - **algorithm_params: additional parameters for initializing the algorithm
         """
-        self.__algorithm = algorithm_class(**algorithm_params)
+        self.__algorithm_params = algorithm_params
+        self.__algorithm = algorithm_class
         self.__features = features
         self.__classes = classes
         self.metrics = None
@@ -43,7 +44,7 @@ class ModelWrapper:
         print("K-Fold Cross-Validation Accuracy:", scores.mean())
         self.metrics = scores.mean()
 
-    def model_train(self, method, **kwargs):
+    def model_train(self, method, grid_search = False, **kwargs):
         """
         Trains the model based on the specified method.
 
@@ -54,6 +55,9 @@ class ModelWrapper:
         Returns:
         - metrics: Accuracy score for holdout or mean and std for kfold
         """
+        if not grid_search:
+            self.__algorithm = self.__algorithm(**self.__algorithm_params)
+    
         match method:
             case 'holdout':
                 self.__holdout(**kwargs)
@@ -63,3 +67,9 @@ class ModelWrapper:
                 print("Method should be 'holdout' or 'kfold'.")
 
         return self.metrics
+    
+    def get_model(self):
+        """
+        Returns the trained model.
+        """
+        return self.__algorithm
